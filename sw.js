@@ -18,7 +18,12 @@ self.addEventListener('fetch', event => {
 
     if (self.lnaPermission === 'granted') {
         console.log('[sw] handling fetch with LNA granted');
-        event.respondWith(fetch(event.request));
+        const strippedHeaders = new Headers(event.request.headers);
+        strippedHeaders.delete('X-Use-SW');
+        const modifiedRequest = new Request(event.request, {
+            headers: strippedHeaders
+        });
+        event.respondWith(fetch(modifiedRequest));
     } else {
         console.log('[sw] not handling fetch, LNA not granted');
         return;
