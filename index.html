@@ -2,11 +2,11 @@
     <head>
     </head>
     <body>
-        <script>
-            <button onclick="fetch()">
-                Trigger query
-            </button>
+        <button onclick="fetch()">
+            Trigger query
+        </button>
 
+        <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
                     console.log('Service Worker registered with scope:', reg.scope);
