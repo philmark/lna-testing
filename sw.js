@@ -12,6 +12,8 @@ self.addEventListener('fetch', event => {
     console.log('[sw] fetching:', event.request.url);
 
     event.waitUntil(getLNAState());
+
+    event.respondWith(fetch(event.request));
 });
 
 
