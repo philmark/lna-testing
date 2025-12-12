@@ -47,7 +47,7 @@
       // Run request
       function runFetch() {
         const url = "http://localhost:8000";
-        const options = {method: 'get', mode: 'no-cors'};
+        const options = {method: 'get', mode: 'cors'};
         return fetch(url, options)
           .then((response) => {
             appendResult(`Response received (status ${response.status})`);
