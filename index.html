@@ -3,7 +3,9 @@
         <script src="script.js"></script>
     </head>
     <body>
-        hello world
+        <p class="lnaState">
+            LNA State: unknown
+        </p>
 
         <script>
             if ('serviceWorker' in navigator) {
@@ -13,6 +15,28 @@
                     console.log('Service Worker registration failed:', err);
                 });
             }
+
+            async function getLNAState() {
+                try {
+                    const permission = await navigator.permissions.query({ name: 'local-network-access' });
+                    let lnaPermission = permission?.state || 'unknown';
+                    permission.onchange = () => {
+                        console.log('Local Network Access permission state changed to:', permission.state);
+                        lnaPermission = permission.state;
+
+                        const lnaStateElement = document.querySelector('.lnaState');
+                        lnaStateElement.textContent = `LNA State: ${lnaPermission}`;
+                    };
+                    return lnaPermission;
+                } catch (error) {
+                    return 'unknown';
+                }
+            }
+
+            window.addEventListener('load', () => {
+                const lnaStateElement = document.querySelector('.lnaState');
+                lnaStateElement.textContent = `LNA State: ${getLNAState()}`;
+            });
         </script>
     </body>
 </html>
