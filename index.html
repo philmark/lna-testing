@@ -1,49 +1,61 @@
 <html>
-    <head>
-    </head>
-    <body>
-        <button onclick="fetch()">
-            Trigger query
-        </button>
+  <head></head>
+  <body>
+    <div class="lnaState">LNA State: unknown</div>
 
-        <script>
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
-                    console.log('Service Worker registered with scope:', reg.scope);
-                }).catch(err => {
-                    console.log('Service Worker registration failed:', err);
-                });
-            }
+    <button onclick="runFetch()">Trigger query</button>
+    <div id="results"></div>
 
-            async function getLNAState() {
-                try {
-                    const permission = await navigator.permissions.query({ name: 'local-network-access' });
-                    let lnaPermission = permission?.state || 'unknown';
-                    permission.onchange = () => {
-                        console.log('LNA state changed to:', permission.state);
-                        lnaPermission = permission.state;
+    <script>
+      // Register SW
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("sw.js", { scope: "./" })
+          .then((reg) => console.log("SW registered:", reg.scope))
+          .catch((err) => console.log("SW registration failed:", err));
+      }
 
-                        const lnaStateElement = document.querySelector('.lnaState');
-                        lnaStateElement.textContent = `LNA State: ${lnaPermission}`;
-                    };
-                } catch (error) {
-                    console.error('Error querying LNA permission:', error);
-                }
-            }
+      // Show LNA Permission
+      async function getLNAState() {
+        try {
+          const permission = await navigator.permissions.query({
+            name: "local-network-access",
+          });
 
-            window.addEventListener('load', async () => {
-                getLNAState();
-            });
+          const el = document.querySelector(".lnaState");
+          el.textContent = `LNA State: ${permission.state}`;
 
-            function fetch() {
-                return fetch('http://localhost:8000')
-                    .then((response) => {
-                        appendResult(url, `response received`);
-                    })
-                    .catch((error) => {
-                        appendResult(url, `error = ${error}`);
-                    });
-            }
-        </script>
-    </body>
+          permission.onchange = () => {
+            el.textContent = `LNA State: ${permission.state}`;
+            console.log("LNA state changed:", permission.state);
+          };
+        } catch (error) {
+          console.error("Error querying LNA permission:", error);
+        }
+      }
+
+      window.addEventListener("load", getLNAState);
+
+      // Simple logger
+      function appendResult(text) {
+        const r = document.getElementById("results");
+        const div = document.createElement("div");
+        div.textContent = text;
+        r.appendChild(div);
+      }
+
+      // Run request
+      function runFetch() {
+        const url = "http://localhost:8000";
+
+        return fetch(url)
+          .then((response) => {
+            appendResult(`Response received (status ${response.status})`);
+          })
+          .catch((error) => {
+            appendResult(`Error: ${error}`);
+          });
+      }
+    </script>
+  </body>
 </html>
