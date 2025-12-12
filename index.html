@@ -1,8 +1,18 @@
 <html>
     <head>
-
+        <script src="script.js"></script>
     </head>
     <body>
         hello world
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
+                    console.log('Service Worker registered with scope:', reg.scope);
+                }).catch(err => {
+                    console.log('Service Worker registration failed:', err);
+                });
+            }
+        </script>
     </body>
 </html>
