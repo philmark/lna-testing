@@ -1,14 +1,31 @@
 self.addEventListener('install', event => {
-    console.log('Service Worker installing.');
+    console.log('[sw]] installing.');
     self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
-    console.log('Service Worker activating.');
+    console.log('[sw]] activating.');
     event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch', event => {
-    console.log('Fetching:', event.request.url);
+    console.log('[sw] Fetching:', event.request.url);
+
+    getLNAState();
 });
 
+
+async function getLNAState() {
+    try {
+        const permission = await navigator.permissions.query({ name: 'local-network-access' });
+        let lnaPermission = permission?.state || 'unknown';
+        permission.onchange = () => {
+            lnaPermission = permission.state;
+            console.log(`[sw] lnaPermission changed to ${lnaPermission}`);
+        };
+
+        console.log(`[sw] lnaPermission: ${lnaPermission}`);
+    } catch (error) {
+        console.log(`Error checking Local Network Access permission:`, error);
+    }
+}

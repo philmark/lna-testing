@@ -1,6 +1,5 @@
 <html>
     <head>
-        <script src="script.js"></script>
     </head>
     <body>
         <p class="lnaState">
@@ -33,9 +32,10 @@
                 }
             }
 
-            window.addEventListener('load', () => {
+            window.addEventListener('load', async () => {
                 const lnaStateElement = document.querySelector('.lnaState');
-                lnaStateElement.textContent = `LNA State: ${getLNAState()}`;
+                const state = await getLNAState();
+                lnaStateElement.textContent = `LNA State: ${state}`;
             });
         </script>
     </body>
