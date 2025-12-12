@@ -3,6 +3,10 @@
     </head>
     <body>
         <script>
+            <button onclick="fetch()">
+                Trigger query
+            </button>
+
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
                     console.log('Service Worker registered with scope:', reg.scope);
@@ -27,9 +31,19 @@
                 }
             }
 
-            window.onload(() => {
+            window.addEventListener('load', async () => {
                 getLNAState();
             });
+
+            function fetch() {
+                return fetch('http://localhost:8000')
+                    .then((response) => {
+                        appendResult(url, `response received`);
+                    })
+                    .catch((error) => {
+                        appendResult(url, `error = ${error}`);
+                    });
+            }
         </script>
     </body>
 </html>
