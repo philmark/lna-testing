@@ -4,6 +4,8 @@
     <div class="lnaState">LNA State: unknown</div>
 
     <button onclick="runFetch()">Trigger query</button>
+
+    <button onclick="runFetch( { withSW: true })">Trigger query intercepted by service worker</button>
     <div id="results"></div>
 
     <script>
@@ -45,9 +47,16 @@
       }
 
       // Run request
-      function runFetch() {
+      function runFetch( { withSW = false } = {}) {
         const url = "http://localhost:8000";
-        const options = {method: 'get', mode: 'cors', cache: 'no-cache'};
+        const options = {
+          method: 'get',
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: {
+            'X-Use-SW': withSW ? 'true' : 'false'
+          }
+        };
         return fetch(url, options)
           .then((response) => {
             appendResult(`Response received (status ${response.status})`);
