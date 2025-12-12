@@ -9,24 +9,28 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    console.log('[sw] fetching:', event.request.url);
-
     event.waitUntil(getLNAState());
 
-    event.respondWith(fetch(event.request));
+    if (self.lnaPermission === 'granted') {
+        console.log('[sw] handling fetch with LNA granted');
+        event.respondWith(fetch(event.request));
+    } else {
+        console.log('[sw] not handling fetch, LNA not granted');
+        return;
+    }
 });
 
 
 async function getLNAState() {
     try {
         const permission = await navigator.permissions.query({ name: 'local-network-access' });
-        let lnaPermission = permission?.state || 'unknown';
+        self.lnaPermission = permission?.state || 'unknown';
         permission.onchange = () => {
-            lnaPermission = permission.state;
-            console.log(`[sw] lnaPermission changed to ${lnaPermission}`);
+            self.lnaPermission = permission.state;
+            console.log(`[sw] lnaPermission changed to ${self.lnaPermission}`);
         };
 
-        console.log(`[sw] lnaPermission: ${lnaPermission}`);
+        console.log(`[sw] lnaPermission: ${self.lnaPermission}`);
     } catch (error) {
         console.log(`[sw] error`, error);
     }
