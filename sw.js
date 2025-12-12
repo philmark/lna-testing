@@ -9,9 +9,9 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    console.log('[sw] Fetching:', event.request.url);
+    console.log('[sw] fetching:', event.request.url);
 
-    getLNAState();
+    event.waitUntil(getLNAState());
 });
 
 
@@ -26,6 +26,6 @@ async function getLNAState() {
 
         console.log(`[sw] lnaPermission: ${lnaPermission}`);
     } catch (error) {
-        console.log(`Error checking Local Network Access permission:`, error);
+        console.log(`[sw] error`, error);
     }
 }

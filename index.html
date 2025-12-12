@@ -2,10 +2,6 @@
     <head>
     </head>
     <body>
-        <p class="lnaState">
-            LNA State: unknown
-        </p>
-
         <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
@@ -20,22 +16,19 @@
                     const permission = await navigator.permissions.query({ name: 'local-network-access' });
                     let lnaPermission = permission?.state || 'unknown';
                     permission.onchange = () => {
-                        console.log('Local Network Access permission state changed to:', permission.state);
+                        console.log('LNA state changed to:', permission.state);
                         lnaPermission = permission.state;
 
                         const lnaStateElement = document.querySelector('.lnaState');
                         lnaStateElement.textContent = `LNA State: ${lnaPermission}`;
                     };
-                    return lnaPermission;
                 } catch (error) {
-                    return 'unknown';
+                    console.error('Error querying LNA permission:', error);
                 }
             }
 
-            window.addEventListener('load', async () => {
-                const lnaStateElement = document.querySelector('.lnaState');
-                const state = await getLNAState();
-                lnaStateElement.textContent = `LNA State: ${state}`;
+            window.onload(() => {
+                getLNAState();
             });
         </script>
     </body>
