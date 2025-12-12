@@ -1,29 +1,29 @@
 self.addEventListener('install', event => {
-    console.log('[sw]] installing.');
+    console.log('[sw] installing.');
     self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
-    console.log('[sw]] activating.');
+    console.log('[sw] activating.');
     event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch', event => {
     event.waitUntil(getLNAState());
 
-    if (event.request.headers.get('X-Use-SW') !== 'true') {
-        console.log('[sw] not handling fetch, X-Use-SW header not set');
-        return;
-    }
+    // if (event.request.headers.get('X-Use-SW') !== 'true') {
+    //     console.log('[sw] not handling fetch, X-Use-SW header not set');
+    //     return;
+    // }
 
     if (self.lnaPermission === 'granted') {
         console.log('[sw] handling fetch with LNA granted');
-        const strippedHeaders = new Headers(event.request.headers);
-        strippedHeaders.delete('X-Use-SW');
-        const modifiedRequest = new Request(event.request, {
-            headers: strippedHeaders
-        });
-        event.respondWith(fetch(modifiedRequest));
+        // const strippedHeaders = new Headers(event.request.headers);
+        // strippedHeaders.delete('X-Use-SW');
+        // const modifiedRequest = new Request(event.request, {
+        //     headers: strippedHeaders
+        // });
+        event.respondWith(fetch(event.request));
     } else {
         console.log('[sw] not handling fetch, LNA not granted');
         return;
