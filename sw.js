@@ -11,21 +11,22 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     event.waitUntil(getLNAState());
 
-    // if (event.request.headers.get('X-Use-SW') !== 'true') {
-    //     console.log('[sw] not handling fetch, X-Use-SW header not set');
-    //     return;
-    // }
+    if (event.request.headers.get('X-Use-SW') !== 'true') {
+        console.log('[sw] not handling fetch, X-Use-SW header not set');
+        return;
+    }
 
+    const strippedHeaders = new Headers(event.request.headers);
+    strippedHeaders.delete('X-Use-SW');
+    const modifiedRequest = new Request(event.request, {
+        headers: strippedHeaders
+    });
     if (self.lnaPermission === 'granted') {
         console.log('[sw] handling fetch with LNA granted');
-        // const strippedHeaders = new Headers(event.request.headers);
-        // strippedHeaders.delete('X-Use-SW');
-        // const modifiedRequest = new Request(event.request, {
-        //     headers: strippedHeaders
-        // });
-        event.respondWith(fetch(event.request));
+        event.respondWith(fetch(modifiedRequest));
     } else {
         console.log('[sw] not handling fetch, LNA not granted');
+        event.respondWith(fetch(modifiedRequest));
         return;
     }
 });
