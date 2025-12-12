@@ -53,9 +53,9 @@
           method: 'get',
           mode: 'cors',
           cache: 'no-cache',
-          headers: {
-            'X-Use-SW': withSW ? 'true' : 'false'
-          }
+          headers: withSW ? {
+            'X-Use-SW': 'true'
+          } : {}
         };
         return fetch(url, options)
           .then((response) => {
