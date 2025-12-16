@@ -3,7 +3,7 @@
   <body>
     <div class="lnaState">LNA State: unknown</div>
 
-    <button id="openPopup">Open popup</button>
+    <!-- <button id="openPopup">Open popup</button> -->
 
     <button onclick="runFetch()">Trigger query</button>
 
@@ -38,7 +38,10 @@
         }
       }
 
-      window.addEventListener("load", getLNAState);
+      window.addEventListener("load", () => {
+        getLNAState();
+        openPopup();
+      });
 
       // Simple logger
       function appendResult(text) {
@@ -68,9 +71,13 @@
           });
       }
 
+      function openPopup() {
+          window.open("https://philmark.github.io/lna-testing", "_blank", "width=600,height=400");
+      }
+
       // Open popup on button click
       document.getElementById("openPopup").addEventListener("click", () => {
-          popupWindow = window.open("https://philmark.github.io/lna-testing", "_blank", "width=600,height=400");
+        openPopup();
       });
     </script>
   </body>
