@@ -3,7 +3,7 @@
   <body>
     <div class="lnaState">LNA State: unknown</div>
 
-    <!-- <button id="openPopup">Open popup</button> -->
+    <button id="openPopup" style="display: none;">Open popup</button>
 
     <button onclick="runFetch()">Trigger query</button>
 
@@ -40,6 +40,13 @@
 
       window.addEventListener("load", () => {
         getLNAState();
+        
+        // Show button conditionally based on URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('withButton') === 'true') {
+          document.getElementById('openPopup').style.display = 'block';
+        }
+        
         // openPopup();
       });
 
